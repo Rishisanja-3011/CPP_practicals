@@ -1,26 +1,27 @@
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
-// Bank Account class
+
 class BankAccount {
 private:
-    static int totalAccounts;  // Static member to keep track of total accounts
+    static int totalAccounts; 
     int accountNumber;
     string accountHolder;
     double balance;
 
 public:
-    // Constructor to initialize account with account holder's name and balance
+   
     BankAccount(string name, double initialBalance) {
-        totalAccounts++;  // Increment total accounts
-        accountNumber = totalAccounts;  // Assign account number based on total accounts
+        totalAccounts++;  
+        accountNumber = totalAccounts; 
         accountHolder = name;
         balance = initialBalance;
     }
 
-    // Function to transfer money between accounts
-    bool transferMoney(BankAccount &toAccount, double amount) {
+    
+    bool transferMoney(BankAccount& toAccount, double amount) {
         if (amount <= 0) {
             cout << "Transfer amount must be positive.\n";
             return false;
@@ -29,62 +30,119 @@ public:
             cout << "Insufficient balance to transfer the amount.\n";
             return false;
         }
-        balance -= amount;  // Deduct from sender account
-        toAccount.balance += amount;  // Add to receiver account
+        balance -= amount;  
+        toAccount.balance += amount;  
         cout << "Transferred Rs. " << amount << " to Account " << toAccount.accountNumber << ".\n";
         return true;
     }
 
-    // Function to display account details
+    
     void displayAccountDetails() const {
         cout << "\nAccount Number: " << accountNumber
              << "\nAccount Holder: " << accountHolder
              << "\nBalance: Rs. " << balance << endl;
     }
 
-    // Static function to get total accounts created
+    
     static int getTotalAccounts() {
         return totalAccounts;
     }
+
+    
+    int getAccountNumber() const {
+        return accountNumber;
+    }
+
+    double getBalance() const {
+        return balance;
+    }
 };
 
-// Initialize static member
+
 int BankAccount::totalAccounts = 0;
 
-int main() {
-    BankAccount* accounts[100];  // Array of pointers to store accounts (up to 100 accounts)
-    int accountCount = 0;
+class BankSystem {
+private:
+    vector<BankAccount*> accounts;  
 
-    // Creating some accounts
-    accounts[accountCount++] = new BankAccount("Alice", 5000);
-    accounts[accountCount++] = new BankAccount("Bob", 3000);
-
-    // Displaying total accounts
-    cout << "Total Accounts Created: " << BankAccount::getTotalAccounts() << endl;
-
-    // Display account details
-    accounts[0]->displayAccountDetails();
-    accounts[1]->displayAccountDetails();
-
-    // Transferring money from Alice to Bob
-    accounts[0]->transferMoney(*accounts[1], 1500);
-
-    // Displaying updated account details
-    accounts[0]->displayAccountDetails();
-    accounts[1]->displayAccountDetails();
-
-    // Creating a new account dynamically
-    accounts[accountCount++] = new BankAccount("Charlie", 2000);
-    cout << "Total Accounts Created: " << BankAccount::getTotalAccounts() << endl;
-
-    // Displaying Charlie's account details
-    accounts[2]->displayAccountDetails();
-
-    // Clean up dynamically allocated memory
-    for (int i = 0; i < accountCount; ++i) {
-        delete accounts[i];
+public:
+   
+    void addAccount(string name, double initialBalance) {
+        BankAccount* newAccount = new BankAccount(name, initialBalance);
+        accounts.push_back(newAccount);
+        cout << "New account created successfully with Account Number: " << newAccount->getAccountNumber() << endl;
     }
+
+    
+    BankAccount* findAccount(int accountNumber) {
+        for (auto account : accounts) {
+            if (account->getAccountNumber() == accountNumber) {
+                return account;
+            }
+        }
+        return nullptr;  
+    }
+
+   
+    void displayAllAccounts() const {
+        cout << "\nAll Accounts:\n";
+        for (auto account : accounts) {
+            account->displayAccountDetails();
+        }
+    }
+
+    
+    void displayTotalAccounts() const {
+        cout << "Total number of accounts: " << BankAccount::getTotalAccounts() << endl;
+    }
+
+    
+    ~BankSystem() {
+        for (auto account : accounts) {
+            delete account;
+        }
+    }
+};
+
+int main() {
+    BankSystem bank;
+
+    
+    bank.addAccount("Alice", 5000);
+    bank.addAccount("Bob", 3000);
+    bank.addAccount("Charlie", 7000);
+
+    
+    bank.displayTotalAccounts();
+
+ 
+    bank.displayAllAccounts();
+
+   
+    int senderAccountNumber, receiverAccountNumber;
+    double transferAmount;
+
+    cout << "\nEnter sender account number: ";
+    cin >> senderAccountNumber;
+    cout << "Enter receiver account number: ";
+    cin >> receiverAccountNumber;
+    cout << "Enter transfer amount: ";
+    cin >> transferAmount;
+
+    BankAccount* sender = bank.findAccount(senderAccountNumber);
+    BankAccount* receiver = bank.findAccount(receiverAccountNumber);
+
+    if (sender != nullptr && receiver != nullptr) {
+        sender->transferMoney(*receiver, transferAmount);
+    } else {
+        cout << "Account not found!\n";
+    }
+
+   
+    bank.displayAllAccounts();
+
+   
+    bank.displayTotalAccounts();
 
     return 0;
 }
-
