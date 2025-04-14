@@ -1,61 +1,46 @@
 #include <iostream>
-#include <ctime> // For measuring execution time
 using namespace std;
 
-// Recursive function to compute sum
-int recursiveSum(int arr[], int start, int end) {
-    if (start > end)
+int recursiveSum(int arr[], int index, int size) {
+    if (index == size)  
         return 0;
-    if (start == end)
-        return arr[start];
-
-    int mid = (start + end) / 2;
-    return recursiveSum(arr, start, mid) + recursiveSum(arr, mid + 1, end);
+    return arr[index] + recursiveSum(arr, index + 1, size);
 }
 
-// Iterative function to compute sum
+
 int iterativeSum(int arr[], int size) {
-    int total = 0;
-    for (int i = 0; i < size; i++) {
-        total += arr[i];
+    int sum = 0;
+    for (int i = 0; i < size; ++i) {
+        sum += arr[i];
     }
-    return total;
+    return sum;
 }
 
 int main() {
-    int n;
-    cout << "Enter the number of elements: ";
-    cin >> n;
+    int size;
 
-    // Dynamic array allocation
-    int* arr = new int[n];
+    cout << "Enter the size of the array: ";
+    cin >> size;
 
-    cout << "Enter " << n << " integers:\n";
-    for (int i = 0; i < n; ++i) {
+    
+    int* arr = new int[size];
+
+    cout << "Enter " << size << " elements:\n";
+    for (int i = 0; i < size; ++i) {
         cin >> arr[i];
     }
 
-    // Measure recursive sum execution time
-    clock_t startTime = clock();
-    int recSum = recursiveSum(arr, 0, n - 1);
-    clock_t endTime = clock();
-    double recTime = double(endTime - startTime) / CLOCKS_PER_SEC;
+    
+    int sum_recursive = recursiveSum(arr, 0, size);
 
-    // Measure iterative sum execution time
-    startTime = clock();
-    int iterSum = iterativeSum(arr, n);
-    endTime = clock();
-    double iterTime = double(endTime - startTime) / CLOCKS_PER_SEC;
+    
+    int sum_iterative = iterativeSum(arr, size);
 
-    cout << "\n--- Results ---\n";
-    cout << "Recursive Sum: " << recSum << "\n";
-    cout << "Iterative Sum: " << iterSum << "\n";
+    
+    cout << "\nSum using Recursive Approach: " << sum_recursive << endl;
+    cout << "Sum using Iterative Approach: " << sum_iterative << endl;
 
-    cout << "\n--- Performance ---\n";
-    cout << "Recursive Execution Time: " << recTime << " seconds\n";
-    cout << "Iterative Execution Time: " << iterTime << " seconds\n";
-
-    // Free dynamically allocated memory
+    
     delete[] arr;
 
     return 0;
