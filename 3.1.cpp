@@ -10,19 +10,19 @@ private:
     double bonus;
 
 public:
-    // Constructor with default bonus
+    
     Employee(string empName, double salary, double empBonus = 5000.0) {
         name = empName;
         basicSalary = salary;
         bonus = empBonus;
     }
 
-    // Inline function to calculate total salary
+   
     inline double getTotalSalary() const {
         return basicSalary + bonus;
     }
 
-    // Display employee details
+    
     void display() const {
         cout << "\nEmployee Name: " << name << endl;
         cout << "Basic Salary: Rs. " << basicSalary << endl;
@@ -35,9 +35,9 @@ int main() {
     int num;
     cout << "Enter the number of employees: ";
     cin >> num;
-    cin.ignore(); // to consume newline
+    cin.ignore(); 
 
-    Employee** employees = new Employee*[num]; // dynamic array of Employee pointers
+    Employee** employees = new Employee*[num]; 
 
     for (int i = 0; i < num; ++i) {
         string name;
@@ -57,12 +57,12 @@ int main() {
         if (choice == 'y' || choice == 'Y') {
             cout << "Enter Bonus: ";
             cin >> bonus;
-            employees[i] = new Employee(name, salary, bonus); // custom bonus
+            employees[i] = new Employee(name, salary, bonus); 
         } else {
-            employees[i] = new Employee(name, salary); // default bonus
+            employees[i] = new Employee(name, salary);
         }
 
-        cin.ignore(); // prepare for next name input
+        cin.ignore(); 
     }
 
     cout << "\n--- Employee Payroll Summary ---\n";
@@ -70,7 +70,7 @@ int main() {
         employees[i]->display();
     }
 
-    // Clean up dynamic memory
+   
     for (int i = 0; i < num; ++i) {
         delete employees[i];
     }
